@@ -38,7 +38,7 @@ namespace UploadTest.Controllers
                
                 //save results here
                 /*
-                var item  = db.DocumentTable.Create
+                var item  = db.DocumentTable.Create();
                 item.MediaType = mediaType;
                 item.filename = filename;
                 item.contents = buffer;
