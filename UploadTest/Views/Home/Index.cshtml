@@ -1,0 +1,53 @@
+﻿<div ng-app="fileUpload" ng-controller="MyCtrl">
+    <h4>Upload on file select</h4>
+    <button ngf-select="uploadFiles($files, $invalidFiles)" multiple
+            accept="pdf/application" ngf-max-height="1000" ngf-max-size="5MB">
+        Select Files
+    </button>
+    <br><br>
+    Files:
+    <ul>
+        <li ng-repeat="f in files" style="font:smaller">
+            {{f.name}} {{f.$errorParam}}
+            <span class="progress" ng-show="f.progress >= 0">
+                <span style="width:{{f.progress}}%"
+                     ng-bind="f.progress + '%'"></span>
+            </span>
+        </li>
+        <li ng-repeat="f in errFiles" style="font:smaller">
+            {{f.name}} {{f.$error}} {{f.$errorParam}}
+        </li>
+    </ul>
+    {{errorMsg}}
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        var app = angular.module('fileUpload', ['ngFileUpload']);
+
+        app.controller('MyCtrl', ['$scope', 'Upload', '$timeout', function ($scope, Upload, $timeout) {
+            $scope.uploadFiles = function (files, errFiles) {
+                $scope.files = files;
+                $scope.errFiles = errFiles;
+                angular.forEach(files, function (file) {
+                        file.upload = Upload.upload({
+                        url: '/api/files/upload',
+                        data: { file: file }
+                    });
+
+                    file.upload.then(function (response) {
+                        $timeout(function () {
+                            file.result = response.data;
+                        });
+                    }, function (response) {
+                        if (response.status > 0)
+                            $scope.errorMsg = response.status + ': ' + response.data;
+                    }, function (evt) {
+                        file.progress = Math.min(100, parseInt(100.0 *
+                                                 evt.loaded / evt.total));
+                    });
+                });
+            }
+        }]);
+    </script>
+}
