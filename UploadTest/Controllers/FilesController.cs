@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
-using System.Web.Http;
-using System.IO;
 using System.Threading.Tasks;
-using System.Web;
-using Newtonsoft.Json;
-
+using System.Web.Http;
 
 namespace UploadTest.Controllers
 {
@@ -19,7 +12,7 @@ namespace UploadTest.Controllers
         {
             if (!Request.Content.IsMimeMultipartContent())
             {
-                this.Request.CreateResponse(HttpStatusCode.UnsupportedMediaType);
+                Request.CreateResponse(HttpStatusCode.UnsupportedMediaType);
             }
 
             var streamProvider = new MultipartMemoryStreamProvider();
@@ -29,13 +22,13 @@ namespace UploadTest.Controllers
                 // You would get hold of the inner memory stream here
                 var len = ctnt.Headers.ContentLength;
                 var stream = ctnt.ReadAsStreamAsync().Result;
-                byte[] buffer = new byte[(int) len];
+                var buffer = new byte[(int) len];
                 await stream.ReadAsync(buffer, 0, (int) len);
                 var mediaType = ctnt.Headers.ContentType.MediaType;
                 var fileName = ctnt.Headers.ContentDisposition.FileName;
                 fileName = fileName.Replace("\"", "");
-               
-               
+
+
                 //save results here
                 /*
                 var item  = db.DocumentTable.Create();
@@ -50,8 +43,7 @@ namespace UploadTest.Controllers
             }
 
 
-            return this.Request.CreateResponse(HttpStatusCode.OK);
+            return Request.CreateResponse(HttpStatusCode.OK);
         }
-
     }
 }

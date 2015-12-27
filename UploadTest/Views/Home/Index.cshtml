@@ -15,7 +15,7 @@
             </span>
         </li>
         <li ng-repeat="f in errFiles" style="font:smaller">
-            {{f.name}} {{f.$error}} {{f.$errorParam}}
+            {{f.name}} <span style="color: red;">{{f.$error}} {{f.$errorParam}}</span>
         </li>
     </ul>
     {{errorMsg}}
